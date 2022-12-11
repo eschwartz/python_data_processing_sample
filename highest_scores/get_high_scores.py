@@ -2,20 +2,36 @@ import json
 from highest_scores.exceptions.InvalidDataException import InvalidDataException
 
 
-def parse_score_result(score, json_data, line_no):
+def get_high_scores(data, max_results):
     """
-    From a score (int) and a JSON string,
-    generate a dict as {id, score}
-
-    line_no is used for error messages
+    Data is iterable of raw lines from a data file
+    Generate a sorted list of dicts, as {id, score}
+    for the top N scores
     """
-    try:
-        data = json.loads(json_data)
-        id = data['id']
-    except json.JSONDecodeError:
-        raise InvalidDataException(line_no + 1, json_data)
+    # Sorted list of scores, as {id, score}
+    top_scores = []
 
-    return {'id': id, 'score': score}
+    # Read file line by line
+    # Only one line is stored in memory at a time
+    for line_no, line in enumerate(data):
+        # Skip empty lines
+        if len(line.strip()) == 0:
+            continue
+
+        # Parse the line into a score and json string
+        score, json_data = parse_line(line, line_no)
+
+        # Update top_scores
+        # with this candidate score
+        update_top_scores(
+            top_scores,
+            score,
+            json_data,
+            max_results,
+            line_no
+        )
+
+    return top_scores
 
 
 def parse_line(line, line_no):
@@ -56,13 +72,13 @@ def update_top_scores(
     for ti, t_score in enumerate(top_scores):
         if score > t_score['score']:
 
-            # Add the top score to the list
-            # Note: we wait to parse JSON until here, to save some cycles
-            score_result = parse_score_result(score, json_data, line_no)
-            top_scores.insert(ti, score_result)
-            found_top = True
+            # Parse the json_data, to get the id
+            id = get_id_from_json(json_data, line_no)
 
-            # Limit scores to max_results
+            # Add the score at the current index
+            top_scores.insert(ti, {'id': id, 'score': score})
+
+            # Remove the last score, if we're over the max
             if (len(top_scores) > max_results):
                 top_scores.pop()
 
@@ -73,37 +89,24 @@ def update_top_scores(
     # This score isn't higher than any existing scores
     # But if room for more, add it to the end
     if len(top_scores) < max_results:
-        score_result = parse_score_result(score, json_data, line_no)
-        top_scores.append(score_result)
+        id = get_id_from_json(json_data, line_no)
+        top_scores.append({'id': id, 'score': score})
 
 
-def get_high_scores(data, max_results):
+def get_id_from_json(json_data, line_no):
     """
-    Data is iterable of raw lines from a data file
-    Generate a list of dicts, as {id, score}
-    for the top N scores
+    From a score (int) and a JSON string,
+    generate a dict as {id, score}
+
+    line_no is used for error messages
     """
-    # Sorted list of scores, as {id, score}
-    top_scores = []
+    try:
+        data = json.loads(json_data)
+        id = data['id']
+    except json.JSONDecodeError:
+        raise InvalidDataException(line_no + 1, json_data)
+    except KeyError:
+        raise InvalidDataException(
+            line_no + 1, 'JSON is missing required id property')
 
-    # Read file line by line
-    # Only one line is stored in memory at a time
-    for line_no, line in enumerate(data):
-        # Skip empty lines
-        if len(line.strip()) == 0:
-            continue
-
-        # Parse the line into a score and json string
-        score, json_data = parse_line(line, line_no)
-
-        # Update top_scores
-        # with this candidate score
-        update_top_scores(
-            top_scores,
-            score,
-            json_data,
-            max_results,
-            line_no
-        )
-
-    return top_scores
+    return id

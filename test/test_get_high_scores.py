@@ -88,6 +88,25 @@ class TestHighest(unittest.TestCase):
             2
         )
 
+    def test_should_raise_for_missing_id(self):
+        data = [
+            '3: {"id":"id_3","data":"abcd1234"}',
+            '7: {"data":"abcd1234"}',
+            '2: {"id":"id_2","data":"abcd1234"}',
+        ]
+
+        with self.assertRaises(InvalidDataException) as err_info:
+            results = get_high_scores(data, 3)
+
+        self.assertEqual(
+            err_info.exception.message,
+            "Invalid data at line 2:\nJSON is missing required id property"
+        )
+        self.assertEqual(
+            err_info.exception.exit_code,
+            2
+        )
+
     def test_should_raise_for_non_int_score(self):
         data = [
             '3: {"id":"id_3","data":"abcd1234"}',
