@@ -43,9 +43,21 @@ Option B:
 
 """
 
-def handle_invalid_data(line_no, info):
-    print(f"Invalid data at line {line_no}:\n{info}", file=sys.stderr)
-    sys.exit(2)
+class InvalidDataException(Exception):
+    """
+    Indicates that some data is invalid, and cannot be parsed
+    """
+    
+    def __init__(self, line_no, message):
+        self.message = f"Invalid data at line {line_no}:\n{message}"
+        super().__init__(self.message)
+
+class DataFileNotFound(Exception):
+    """
+    Indicates that the provided data file cannot be found
+    """
+    pass
+
 
 
 def parse_score(score, json_data, line_no):
@@ -53,7 +65,7 @@ def parse_score(score, json_data, line_no):
         data = json.loads(json_data)
         id = data['id']
     except:
-        handle_invalid_data(line_no, json_data)
+        raise InvalidDataException(line_no, json_data)
     
     return { 'id': id, 'score': score }
 
@@ -74,7 +86,7 @@ def get_high_scores(data, max_records):
             score, json_data = line.split(': ', 1)
             score = int(score)
         except:
-            handle_invalid_data(line_no, line)  # exits
+            raise InvalidDataException(line_no, line)  # exits
 
         # Add first entry, if there are no top scores
         if len(top_scores) == 0:
@@ -119,9 +131,22 @@ if __name__ == '__main__':
     max_records = 5 
 
     with open(file_name) as f:
-        results = get_high_scores(f, max_records)
+        try:
+            results = get_high_scores(f, max_records)
 
-        print(json.dumps(results, indent=2))
+            print(json.dumps(results, indent=2))
+        except DataFileNotFound as err:
+            print(err.message, file=sys.stderr)
+            sys.exit(1)
+        except InvalidDataException as err:
+            print(err.message, file=sys.stderr)
+            sys.exit(2)
+        except:
+            print(f"Process failed: {err.message}", file=sys.stderr)
+            # error code not specified in requirements, 
+            # but it may be useful if this is different than the others
+            sys.exit(3)
+
 
 
 # TODO
