@@ -1,9 +1,6 @@
 import sys
 import json
 
-# TODO get from CLI args
-file_name = "example_input_data_1.data"
-max_records = 5
 
 # TODO exit conditions:
 # - 2 for invalid input
@@ -50,8 +47,7 @@ def handle_invalid_data(line_no, info):
     print(f"Invalid data at line {line_no}:\n{info}", file=sys.stderr)
     sys.exit(2)
 
-# List of dicts, as {id, score}
-top_scores = []
+
 def parse_score(score, json_data, line_no):
     try:
         data = json.loads(json_data)
@@ -61,11 +57,13 @@ def parse_score(score, json_data, line_no):
     
     return { 'id': id, 'score': score }
 
+def get_high_scores(data, max_records):
+    # List of dicts, as {id, score}
+    top_scores = []
 
-with open(file_name) as f:
     # Read file line by line
     # Only one line is stored in memory at a time
-    for line_no, line in enumerate(f):
+    for line_no, line in enumerate(data):
         # Skip empty lines
         if len(line.strip()) == 0:
             continue
@@ -107,9 +105,23 @@ with open(file_name) as f:
         if found_top is False and len(top_scores) < max_records:
             score_item = parse_score(score, json_data, line_no)
             top_scores.append(score_item)
+    
+    return top_scores
 
 
-print(json.dumps(top_scores, indent=2))
+    
+
+
+
+if __name__ == '__main__':
+    # TODO get from CLI args
+    file_name = "example_input_data_1.data"
+    max_records = 5 
+
+    with open(file_name) as f:
+        results = get_high_scores(f, max_records)
+
+        print(json.dumps(results, indent=2))
 
 
 # TODO
