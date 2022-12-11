@@ -8,8 +8,8 @@ highest.py
 Usage: python3 highest.py FILE MAX_RESULTS
 
 Description:
-    Takes a data file containing scored samples 
-    and produce the N highest scores and sample ids, 
+    Takes a data file containing scored samples
+    and produce the N highest scores and sample ids,
     ordered by descending score.
 
 Arguments:
@@ -32,10 +32,11 @@ Output:
     ]
 """
 
+
 def parse_cli_args(args):
     # First arg is the name of the script
     # Cut this out.
-    args = args[1:] 
+    args = args[1:]
 
     # Check for -h or --help
     if args[0] in ['-h', '--help']:
@@ -48,24 +49,21 @@ def parse_cli_args(args):
         print("ERROR: Invalid arguments for highest.py", file=sys.stderr)
         print(help_text, file=sys.stderr)
         sys.exit(1)
-    
+
     # We've verified there are exactly 2 args
     file_path, max_results = args
 
     # Validate max_results is an int
     try:
         max_results = int(max_results)
-    except:
+    except BaseException:
         print(
-            "ERROR: Invalid arguments for highest.py: MAX_RESULTS must be an integer", 
-            file=sys.stderr
-        )
+            "ERROR: Invalid arguments for highest.py: MAX_RESULTS must be an integer",
+            file=sys.stderr)
         sys.exit(1)
 
     # Verify file exists
     if Path(file_path).is_file() is False:
         raise DataFileNotFound(file_path)
-
-
 
     return file_path, max_results

@@ -3,6 +3,7 @@ import unittest
 from highest_scores.get_high_scores import get_high_scores
 from highest_scores.exceptions.InvalidDataException import InvalidDataException
 
+
 class TestHighest(unittest.TestCase):
 
     def test_should_return_highest_results(self):
@@ -21,9 +22,9 @@ class TestHighest(unittest.TestCase):
 
         results = get_high_scores(data, 3)
         self.assertEqual(results, [
-            { 'id': 'id_9', 'score': 9 },
-            { 'id': 'id_8', 'score': 8 },
-            { 'id': 'id_7', 'score': 7 },
+            {'id': 'id_9', 'score': 9},
+            {'id': 'id_8', 'score': 8},
+            {'id': 'id_7', 'score': 7},
         ])
 
     def test_should_ignore_empty_rows(self):
@@ -48,11 +49,11 @@ class TestHighest(unittest.TestCase):
 
         results = get_high_scores(data, 3)
         self.assertEqual(results, [
-            { 'id': 'id_9', 'score': 9 },
-            { 'id': 'id_8', 'score': 8 },
-            { 'id': 'id_7', 'score': 7 },
+            {'id': 'id_9', 'score': 9},
+            {'id': 'id_8', 'score': 8},
+            {'id': 'id_7', 'score': 7},
         ])
-    
+
     def test_should_handle_fewer_rows_than_requested(self):
         data = [
             '3: {"id":"id_3","data":"abcd1234"}',
@@ -63,9 +64,9 @@ class TestHighest(unittest.TestCase):
         # Request 5 records, but there are only 3 available
         results = get_high_scores(data, 5)
         self.assertEqual(results, [
-            { 'id': 'id_7', 'score': 7 },
-            { 'id': 'id_3', 'score': 3 },
-            { 'id': 'id_2', 'score': 2 },
+            {'id': 'id_7', 'score': 7},
+            {'id': 'id_3', 'score': 3},
+            {'id': 'id_2', 'score': 2},
         ])
 
     def test_should_raise_for_invalid_json(self):
@@ -77,9 +78,9 @@ class TestHighest(unittest.TestCase):
 
         with self.assertRaises(InvalidDataException) as err_info:
             results = get_high_scores(data, 3)
-            
+
         self.assertEqual(
-            err_info.exception.message, 
+            err_info.exception.message,
             "Invalid data at line 2:\nnot valid json"
         )
         self.assertEqual(
@@ -96,9 +97,9 @@ class TestHighest(unittest.TestCase):
 
         with self.assertRaises(InvalidDataException) as err_info:
             results = get_high_scores(data, 3)
-            
+
         self.assertEqual(
-            err_info.exception.message, 
+            err_info.exception.message,
             'Invalid data at line 2:\nbananas: {"id":"id_7","data":"abcd1234"}'
         )
         self.assertEqual(
@@ -115,9 +116,9 @@ class TestHighest(unittest.TestCase):
 
         with self.assertRaises(InvalidDataException) as err_info:
             results = get_high_scores(data, 3)
-            
+
         self.assertEqual(
-            err_info.exception.message, 
+            err_info.exception.message,
             'Invalid data at line 2:\nnot valid data'
         )
         self.assertEqual(

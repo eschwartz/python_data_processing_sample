@@ -1,6 +1,7 @@
 import json
 from highest_scores.exceptions.InvalidDataException import InvalidDataException
 
+
 def parse_score_result(score, json_data, line_no):
     """
     From a score (int) and a JSON string,
@@ -13,8 +14,9 @@ def parse_score_result(score, json_data, line_no):
         id = data['id']
     except json.JSONDecodeError:
         raise InvalidDataException(line_no + 1, json_data)
-    
-    return { 'id': id, 'score': score }
+
+    return {'id': id, 'score': score}
+
 
 def parse_line(line, line_no):
     """
@@ -26,15 +28,16 @@ def parse_line(line, line_no):
         # to get score and JSON string
         score, json_data = line.split(': ', 1)
         score = int(score)
-    except:
+    except BaseException:
         raise InvalidDataException(line_no + 1, line)  # exits
-    
+
     return score, json_data
 
+
 def update_top_scores(
-    top_scores, 
-    score, 
-    json_data, 
+    top_scores,
+    score,
+    json_data,
     max_results,
     line_no
 ):
@@ -58,7 +61,7 @@ def update_top_scores(
             score_result = parse_score_result(score, json_data, line_no)
             top_scores.insert(ti, score_result)
             found_top = True
-            
+
             # Limit scores to max_results
             if (len(top_scores) > max_results):
                 top_scores.pop()
@@ -66,12 +69,13 @@ def update_top_scores(
             # We found a top score, and added it
             # so we're all done here
             return
-    
+
     # This score isn't higher than any existing scores
     # But if room for more, add it to the end
     if len(top_scores) < max_results:
         score_result = parse_score_result(score, json_data, line_no)
         top_scores.append(score_result)
+
 
 def get_high_scores(data, max_results):
     """
@@ -91,7 +95,6 @@ def get_high_scores(data, max_results):
 
         # Parse the line into a score and json string
         score, json_data = parse_line(line, line_no)
-        
 
         # Update top_scores
         # with this candidate score
@@ -101,6 +104,6 @@ def get_high_scores(data, max_results):
             json_data,
             max_results,
             line_no
-        ) 
-    
+        )
+
     return top_scores

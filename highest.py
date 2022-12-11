@@ -31,7 +31,6 @@ if __name__ == '__main__':
             sys.exit(1)
 
 
-
 # TODO
 # [x] Test the solution
 # [x] Add cli arg support
