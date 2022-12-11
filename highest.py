@@ -2,76 +2,9 @@ import sys
 import json
 from pathlib import Path
 
-
-# TODO exit conditions:
-# - 2 for invalid input
-# - 1 for missing file
-# - ignore empty lines
-
-"""
-Option A:
-    keep a list of [score:line no]
-    loop through lines, and parse each as JSON
-    sort by score
-    take top five items
-    re-read their line numbers from the file
-        and write into dict, for JSON output
-
-    Performance:
-        Two iterating operations: file read, sorting
-        https://stackoverflow.com/a/14434514/830030 <- sorted is O(nlogn) 
-            O(n + nlogn)?
-        Two file reads
-        Parsing each JSON line
-        
-    memory: 
-        keeping entire list of scores in memory, could be big
-
-Option B:
-    Keep a list of top 5 scores, as { score, id }
-    loop through lines, and split into score / JSON string (no parsing)
-    check if score is in the top 5, and update list
-
-    Performance
-        Technically O(n2)
-            but really only if output count == data count
-            ~ O(n*x)
-            or O(n*x2) (with insert into list?)
-        In practice, should be fast if output count is small
-    
-    Memory:
-        only keeping the top 5, plus the one line being read
-
-"""
-
-class DataProcessingException(Exception):
-    """
-    Base exception for any errors from this
-    data processing script.
-    """
-    def __init__(self, message, exit_code=1):
-        self.exit_code = exit_code
-        self.message = message
-        super().__init__(message)
-
-class InvalidDataException(DataProcessingException):
-    """
-    Indicates that some data is invalid, and cannot be parsed
-    """
-    
-    def __init__(self, line_no, message):
-        message = f"Invalid data at line {line_no}:\n{message}"
-        super().__init__(message, exit_code=2)
-
-
-class DataFileNotFound(DataProcessingException):
-    """
-    Indicates that the provided data file cannot be found
-    """
-    def __init__(self, file_path):
-        message = f"Data file not found at {file_path}"
-        super().__init__(message, exit_code=1)
-
+from exceptions.InvalidDataException import InvalidDataException
+from exceptions.DataFileNotFound import DataFileNotFound
+from exceptions.DataProcessingException import DataProcessingException
 
 
 def parse_score(score, json_data, line_no):
@@ -217,7 +150,7 @@ if __name__ == '__main__':
 
 # TODO
 # [x] Test the solution
-# - Add cli arg support
+# [x] Add cli arg support
 # - Organize and comment code
 # - Test memory usage & performance
 # - format nice (pip8?)

@@ -1,6 +1,7 @@
 import unittest
 
-from highest import get_high_scores, InvalidDataException
+from highest import get_high_scores
+from exceptions.InvalidDataException import InvalidDataException
 
 class TestHighest(unittest.TestCase):
 
