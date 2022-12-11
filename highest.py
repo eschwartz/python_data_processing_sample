@@ -43,20 +43,32 @@ Option B:
 
 """
 
-class InvalidDataException(Exception):
+class DataProcessingException(Exception):
+    """
+    Base exception for any errors from this
+    data processing script.
+    """
+    def __init__(self, message, exit_code=1):
+        self.exit_code = exit_code
+        self.message = message
+        super().__init__(message)
+
+class InvalidDataException(DataProcessingException):
     """
     Indicates that some data is invalid, and cannot be parsed
     """
     
     def __init__(self, line_no, message):
-        self.message = f"Invalid data at line {line_no}:\n{message}"
-        super().__init__(self.message)
+        message = f"Invalid data at line {line_no}:\n{message}"
+        super().__init__(message, exit_code=2)
 
-class DataFileNotFound(Exception):
+
+class DataFileNotFound(DataProcessingException):
     """
     Indicates that the provided data file cannot be found
     """
-    pass
+    def __init__(self, message):
+        super().__init__(message, exit_code=1)
 
 
 
@@ -65,7 +77,7 @@ def parse_score(score, json_data, line_no):
         data = json.loads(json_data)
         id = data['id']
     except:
-        raise InvalidDataException(line_no, json_data)
+        raise InvalidDataException(line_no + 1, json_data)
     
     return { 'id': id, 'score': score }
 
@@ -86,7 +98,7 @@ def get_high_scores(data, max_records):
             score, json_data = line.split(': ', 1)
             score = int(score)
         except:
-            raise InvalidDataException(line_no, line)  # exits
+            raise InvalidDataException(line_no + 1, line)  # exits
 
         # Add first entry, if there are no top scores
         if len(top_scores) == 0:
@@ -135,12 +147,9 @@ if __name__ == '__main__':
             results = get_high_scores(f, max_records)
 
             print(json.dumps(results, indent=2))
-        except DataFileNotFound as err:
+        except DataProcessingException as err:
             print(err.message, file=sys.stderr)
-            sys.exit(1)
-        except InvalidDataException as err:
-            print(err.message, file=sys.stderr)
-            sys.exit(2)
+            sys.exit(err.exit_code)
         except:
             print(f"Process failed: {err.message}", file=sys.stderr)
             # error code not specified in requirements, 
@@ -154,3 +163,4 @@ if __name__ == '__main__':
 # - Add cli arg support
 # - Organize and comment code
 # - Test memory usage & performance
+# - format nice (pip8?)
