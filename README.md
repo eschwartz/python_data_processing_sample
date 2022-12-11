@@ -12,7 +12,7 @@ This solution prioritizes memory efficiency and dev time efficiency. The script 
 
 **Requires Python 3.10.8**
 
-This script has not been tested with other versions of Pythons. Consider [running in a docker container](#using-docker)
+This script has not been tested with other versions of Python. Consider [running in a docker container](#using-docker).
 
 To run:
 
@@ -24,6 +24,12 @@ eg:
 
 ```
 python highest.py ./example_input_data_1.data 5
+```
+
+For full usage instructions, run:
+
+```
+python highest.py -h
 ```
 
 
@@ -54,7 +60,7 @@ npm install chance
 
 ### Tests
 
-This submission includes partial test coverage of the core logic. To run test:
+This submission includes partial test coverage of the core logic. To run tests:
 
 ```
 python -m unittest
@@ -66,7 +72,9 @@ This submission includes code to profile memory usage. To run the profiler:
 
 ```
 pip3 install -U memory_profiler
-# Create profile for processing example_input_data_3.data, with 5 max results
+
+# Generate a report for processing example_input_data_3.data, 
+# with 5 max results
 python3 -m memory_profiler ./test/profile_get_high_scores.py example_input_data_3.data 5
 ```
 
