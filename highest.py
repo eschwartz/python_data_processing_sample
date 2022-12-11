@@ -7,27 +7,36 @@ from highest_scores.parse_cli_args import parse_cli_args
 
 
 if __name__ == '__main__':
+    # Get the data file path and max results from the CLI args
     file_path, max_results = parse_cli_args(sys.argv)
 
+    # Open the data file
     with open(file_path) as f:
         try:
+            # Get the top N scores
             results = get_high_scores(f, max_results)
 
+            # Output results as JSON
             print(json.dumps(results, indent=2))
         except DataProcessingException as err:
+            # Handle data processing errors and exit
             print(err.message, file=sys.stderr)
+
+            # Exceptions define their own exit code
+            # according to the type of failure
             sys.exit(err.exit_code)
         except Exception as err:
+            # Handle other errors (eg. script failure)
             print(f"Process failed: {err}", file=sys.stderr)
-            # error code not specified in requirements, 
-            # but it may be useful if this is different than the others
-            sys.exit(3)
+            sys.exit(1)
 
 
 
 # TODO
 # [x] Test the solution
 # [x] Add cli arg support
-# - Organize and comment code
+# [x] Organize and comment code
+#   - create TopScores class, to better handle that state
 # - Test memory usage & performance
+# - test other functions (eg. parse_cli_args)
 # - format nice (pip8?)
