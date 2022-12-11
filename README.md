@@ -1,12 +1,18 @@
 # "Highest Scores" Code Challenge
 
-_Submission by Edan Schwartz, Dec 2022_
+_Submission by Edan Schwartz for Emerald Cloud Lab, Dec 2022_
+
+[Instructions](./INSTRUCTIONS.md):
 
 > Take a data file containing scored samples and produce the N highest scores and sample ids, ordered by descending score.
 
-This solution prioritizes memory efficiency and dev time efficiency. The script can process a file with **1,000,000 records in 23s using < 200kb of memory**. See [Profiler](#profiler) for details.
+This solution prioritizes memory efficiency and dev time efficiency. The script can process a file with **1,000,000 records in ~23s using < 200kb of memory**. See [Profiler](#profiler) for details.
 
 ## Usage
+
+**Requires Python 3.10.8**
+
+This script has not been tested with other versions of Pythons. Consider [running in a docker container](#using-docker)
 
 To run:
 
@@ -36,12 +42,6 @@ docker run \
 ```
 
 
-### Requirements
-
-- Python 3.10.8
-
-This script has not been tested with other versions of Pythons. Consider [running in a docker container](#using-docker)
-
 
 ### Generating data fixtures
 
@@ -70,8 +70,6 @@ pip3 install -U memory_profiler
 python3 -m memory_profiler ./test/profile_get_high_scores.py example_input_data_3.data 5
 ```
 
-
-
 ## Performance
 
 See example memory profiler results at [profile-1M.txt](./profile-1M.txt). You'll see here that processing a file with 1,000,000 records uses ~120kb of memory, when asking for 5 max results.
@@ -87,11 +85,13 @@ See example memory profiler results at [profile-1M.txt](./profile-1M.txt). You'l
     18   16.062 MiB    0.008 MiB           1           json.dumps(results, indent=2)
 ```
 
-Processing 1,000,000 records took ~23s on my MacBook Pro. I chose to focus on memory efficiency, as hinted in the instructions. 
+Processing 1,000,000 records took ~23s on my 2020 MacBook Pro. I chose to focus on memory efficiency, as hinted at in the instructions. 
 
-Time complexity is something like `O(n * x^2)` where x is the value `MAX_RESULTS`. Worst case, this is `O(n^3)`. But if we assume that `MAX_RESULTS` is generally small (say, `3`), we may end up with something closer to `O(9n)`.
+Time complexity is something like `O(n * max_results^2)`. Worst case, this is `O(n^3)`. But if we assume that `MAX_RESULTS` is generally small (say, `3`), we may end up with something closer to `O(9n)`.
 
 As a case in point, increasing the max results from 5 to 100 results [increases run time from 23s to 160s](./profile-1M-100.txt), for a dataset with 1M records.
+
+Time complexity could be improved by keeping all scores in memory, eg in a `{ score: id }` dict, and sorting at the end. But this would come at the cost of higher memory usage.
 
 
 ### Future Considerations
