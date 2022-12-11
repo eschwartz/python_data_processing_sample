@@ -1,7 +1,7 @@
 import unittest
 
-from highest import get_high_scores
-from exceptions.InvalidDataException import InvalidDataException
+from highest_scores.get_high_scores import get_high_scores
+from highest_scores.exceptions.InvalidDataException import InvalidDataException
 
 class TestHighest(unittest.TestCase):
 
@@ -124,6 +124,3 @@ class TestHighest(unittest.TestCase):
             err_info.exception.exit_code,
             2
         )
-
-if __name__ == '__main__':
-    unittest.main()

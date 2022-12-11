@@ -1,4 +1,4 @@
-from exceptions.DataProcessingException import DataProcessingException
+from highest_scores.exceptions.DataProcessingException import DataProcessingException
 
 class InvalidDataException(DataProcessingException):
     """
