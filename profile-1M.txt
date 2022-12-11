@@ -1,0 +1,22 @@
+Complete in 23.55s
+Filename: ./test/profile_get_high_scores.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     7   15.934 MiB   15.934 MiB           1   @profile
+     8                                         def profile_high_score(file_path):
+     9   15.938 MiB    0.004 MiB           1       start_time = perf_counter()
+    10                                         
+    11   15.938 MiB    0.000 MiB           1       max_results = 5
+    12                                         
+    13   16.062 MiB    0.000 MiB           2       with open(file_path) as f:
+    14                                                 # Get the top N scores
+    15   16.055 MiB    0.117 MiB           1           results = get_high_scores(f, max_results)
+    16                                         
+    17                                                 # Output results as JSON
+    18   16.062 MiB    0.008 MiB           1           json.dumps(results, indent=2)
+    19                                         
+    20   16.062 MiB    0.000 MiB           1       duration = perf_counter() - start_time
+    21   16.078 MiB    0.016 MiB           1       print(f"Complete in {round(duration, 2)}s")
+
+

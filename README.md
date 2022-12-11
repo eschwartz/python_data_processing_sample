@@ -4,7 +4,7 @@ _Submission by Edan Schwartz, Dec 2022_
 
 > Take a data file containing scored samples and produce the N highest scores and sample ids, ordered by descending score.
 
-This solution prioritizes memory efficiency and dev time efficiency. The script can process a file with **480,000 records using < 200kb of memory**. See [Profiler](#profiler) for details.
+This solution prioritizes memory efficiency and dev time efficiency. The script can process a file with **1,000,000 records in 23s using < 200kb of memory**. See [Profiler](#profiler) for details.
 
 ## Usage
 
@@ -66,34 +66,37 @@ This submission includes code to profile memory usage. To run the profiler:
 
 ```
 pip3 install -U memory_profiler
-# Requires a data file at example_input_data_3.data
-python3 -m memory_profiler ./test/profile_get_high_scores.py
+# Create profile for processing example_input_data_3.data, with 5 max results
+python3 -m memory_profiler ./test/profile_get_high_scores.py example_input_data_3.data 5
 ```
-
-
-
 
 
 
 ## Performance
 
-See example memory profiler results at [profile-480k.txt](./profile-480k.txt). You'll see here that processing the file uses ~190kb of memory. 
+See example memory profiler results at [profile-1M.txt](./profile-1M.txt). You'll see here that processing a file with 1,000,000 records uses ~120kb of memory, when asking for 5 max results.
 
 ```
-12   16.012 MiB    0.000 MiB           2       with open(file_path) as f:
-13                                                 # Get the top N scores
-14   16.008 MiB    0.184 MiB           1           results = get_high_scores(f, max_results)
-15                                         
-16                                                 # Output results as JSON
-17   16.012 MiB    0.004 MiB           1           json.dumps(results, indent=2)
+    11   15.938 MiB    0.000 MiB           1       max_results = 5
+    12                                         
+    13   16.062 MiB    0.000 MiB           2       with open(file_path) as f:
+    14                                                 # Get the top N scores
+    15   16.055 MiB    0.117 MiB           1           results = get_high_scores(f, max_results)
+    16                                         
+    17                                                 # Output results as JSON
+    18   16.062 MiB    0.008 MiB           1           json.dumps(results, indent=2)
 ```
 
-Processing a file with 480,000 records took ~10s on my MacBook Pro. I chose to focus on memory efficiency, as hinted in the instructions. 
+Processing 1,000,000 records took ~23s on my MacBook Pro. I chose to focus on memory efficiency, as hinted in the instructions. 
 
 Time complexity is something like `O(n * x^2)` where x is the value `MAX_RESULTS`. Worst case, this is `O(n^3)`. But if we assume that `MAX_RESULTS` is generally small (say, `3`), we may end up with something closer to `O(9n)`.
+
+As a case in point, increasing the max results from 5 to 100 results [increases run time from 23s to 160s](./profile-1M-100.txt), for a dataset with 1M records.
 
 
 ### Future Considerations
 
-- test coverage
-- time performance (vs memory & dev tim)
+With more time I would prioritize:
+
+- More comprehensive test coverage
+- Time performance improvements
