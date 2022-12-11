@@ -46,7 +46,7 @@ To test your code, we've included a sample node.js app that will generate 3 test
 To generate the test files, run:
 ```
 npm install chance 
-./gen.js
+node ./gen.js
 ```
 
 ### Output format
