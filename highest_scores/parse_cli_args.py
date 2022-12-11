@@ -52,8 +52,20 @@ def parse_cli_args(args):
     # We've verified there are exactly 2 args
     file_path, max_results = args
 
+    # Validate max_results is an int
+    try:
+        max_results = int(max_results)
+    except:
+        print(
+            "ERROR: Invalid arguments for highest.py: MAX_RESULTS must be an integer", 
+            file=sys.stderr
+        )
+        sys.exit(1)
+
     # Verify file exists
     if Path(file_path).is_file() is False:
         raise DataFileNotFound(file_path)
+
+
 
     return file_path, max_results

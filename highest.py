@@ -8,9 +8,6 @@ from highest_scores.parse_cli_args import parse_cli_args
 
 if __name__ == '__main__':
     file_path, max_results = parse_cli_args(sys.argv)
-    # TODO get from CLI args
-    file_path = "example_input_data_1.data"
-    max_results = 5 
 
     with open(file_path) as f:
         try:
