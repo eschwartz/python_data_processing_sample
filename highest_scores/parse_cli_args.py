@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 from highest_scores.exceptions.DataFileNotFound import DataFileNotFound
@@ -9,7 +10,7 @@ Usage: python3 highest.py FILE MAX_RESULTS
 
 Description:
     Takes a data file containing scored samples
-    and produce the N highest scores and sample ids,
+    and produces the N highest scores and sample ids,
     ordered by descending score.
 
 Arguments:

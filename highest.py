@@ -29,13 +29,3 @@ if __name__ == '__main__':
             # Handle other errors (eg. script failure)
             print(f"Process failed: {err}", file=sys.stderr)
             sys.exit(1)
-
-
-# TODO
-# [x] Test the solution
-# [x] Add cli arg support
-# [x] Organize and comment code
-#   - create TopScores class, to better handle that state
-# - Test memory usage & performance
-# - test other functions (eg. parse_cli_args)
-# - format nice (pip8?)
