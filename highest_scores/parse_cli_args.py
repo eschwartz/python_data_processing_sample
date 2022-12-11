@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from highest_scores.exceptions.DataFileNotFound import DataFileNotFound
+from highest_scores.exceptions.DataFileNotFoundException import DataFileNotFoundException
 
 help_text = """
 highest.py
@@ -65,6 +65,6 @@ def parse_cli_args(args):
 
     # Verify file exists
     if Path(file_path).is_file() is False:
-        raise DataFileNotFound(file_path)
+        raise DataFileNotFoundException(file_path)
 
     return file_path, max_results

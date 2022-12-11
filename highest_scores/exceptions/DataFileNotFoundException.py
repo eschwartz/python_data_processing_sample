@@ -1,7 +1,7 @@
 from highest_scores.exceptions.DataProcessingException import DataProcessingException
 
 
-class DataFileNotFound(DataProcessingException):
+class DataFileNotFoundException(DataProcessingException):
     """
     Indicates that the provided data file cannot be found
     """
