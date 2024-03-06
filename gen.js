@@ -3,7 +3,7 @@ var Chance = require('chance');
 var fs = require('fs');
 
 // Instantiate chance with a seed, so we get the same files each time.
-var chance = new Chance('emeraldcloud_seed');
+var chance = new Chance('seed');
 
 function generate(count, filename) {
 	var out = '';

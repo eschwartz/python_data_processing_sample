@@ -1,12 +1,26 @@
-# "Highest Scores" Code Challenge
+# Python Data Processing Code Sample
 
-_Submission by Edan Schwartz for Emerald Cloud Lab, Dec 2022_
+By Edan Schwartz, 2024
 
-[Instructions](./INSTRUCTIONS.md):
+Given a data file containing scored records, this program outputs the N highest record IDs ordered by descending score as JSON
 
-> Take a data file containing scored samples and produce the N highest scores and sample ids, ordered by descending score.
+The input data file is a series of key-value pairs (one per line) with the format
+```
+<score> : <record>
+```
 
-This solution prioritizes memory efficiency and dev time efficiency. The script can process a file with **1,000,000 records in ~23s using < 200kb of memory**. See [Profiler](#profiler) for details.
+
+In valid input files, the ``score`` is an integer and the ``record`` is a JSON dictionary.  The ``record`` can be any kind of well-formed JSON doc (with the exception of no line breaks).  The only constraint on the ``record`` is that a valid ``record`` will contain an ``id`` key that uniquely defines that record.  All scores and ids are unique.  A ``record`` that is not valid JSON or that does not contain an ``id`` field should be considered invalid and handled as described under **Exit Conditions**
+
+An example input data file is:
+```
+8795136: {"id":"d2e257c282b54347ac14b2d8","x":"foo","payload":"someamountofdata"}
+5317020: {"id":"619236365add4a0ca6e501fc","type":"purple","payload":"smalldata"}
+.
+.
+.
+2766123: {"id":"da9f77e6a0f076b000a6c0e0","payload":"reallyquitealotofdata"}
+```
 
 ## Usage
 
@@ -60,7 +74,7 @@ npm install chance
 
 ### Tests
 
-This submission includes partial test coverage of the core logic. To run tests:
+This repo includes partial test coverage of the core logic. To run tests:
 
 ```
 python -m unittest
@@ -68,7 +82,7 @@ python -m unittest
 
 ### Profiler
 
-This submission includes code to profile memory usage. To run the profiler:
+This repo includes code to profile memory usage. To run the profiler:
 
 ```
 pip3 install -U memory_profiler
@@ -95,9 +109,6 @@ See example memory profiler results at [profile-1M.txt](./profile-1M.txt). You'l
 
 Processing 1,000,000 records took ~23s on my 2020 MacBook Pro. I chose to focus on memory efficiency, as hinted at in the instructions. 
 
-Time complexity is something like `O(n * max_results^2)`. Worst case, this is `O(n^3)`. But if we assume that `MAX_RESULTS` is generally small (say, `3`), we may end up with something closer to `O(9n)`.
-
-As a case in point, increasing the max results from 5 to 100 results [increases run time from 23s to 160s](./profile-1M-100.txt), for a dataset with 1M records.
 
 Time complexity could be improved by keeping all scores in memory, eg in a `{ score: id }` dict, and sorting at the end. But this would come at the cost of higher memory usage.
 
